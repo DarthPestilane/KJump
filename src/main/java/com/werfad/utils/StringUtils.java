@@ -7,10 +7,21 @@ import java.util.List;
 public class StringUtils {
     public static List<Integer> findAll(String str, char c, boolean ignoreCase) {
         List<Integer> res = new ArrayList<>();
-        int index = str.indexOf(c);
-        while (index >= 0) {
-            res.add(index);
-            index = str.indexOf(c, index + 1);
+        if (ignoreCase) {
+            char lowerC = Character.toLowerCase(c);
+            char upperC = Character.toUpperCase(c);
+            for (int i = 0; i < str.length(); i++) {
+                char currentChar = str.charAt(i);
+                if (currentChar == lowerC || currentChar == upperC) {
+                    res.add(i);
+                }
+            }
+        } else {
+            int index = str.indexOf(c);
+            while (index >= 0) {
+                res.add(index);
+                index = str.indexOf(c, index + 1);
+            }
         }
         return res;
     }
@@ -21,10 +32,20 @@ public class StringUtils {
 
     public static List<Integer> findAll(String str, String find, boolean ignoreCase) {
         List<Integer> res = new ArrayList<>();
-        int index = str.indexOf(find);
-        while (index >= 0) {
-            res.add(index);
-            index = str.indexOf(find, index + 1);
+        if (ignoreCase) {
+            String lowerStr = str.toLowerCase();
+            String lowerFind = find.toLowerCase();
+            int index = lowerStr.indexOf(lowerFind);
+            while (index >= 0) {
+                res.add(index);
+                index = lowerStr.indexOf(lowerFind, index + 1);
+            }
+        } else {
+            int index = str.indexOf(find);
+            while (index >= 0) {
+                res.add(index);
+                index = str.indexOf(find, index + 1);
+            }
         }
         return res;
     }
