@@ -158,9 +158,8 @@ public class GlobalJumpHandler implements TypedActionHandler {
         mOldEscActionHandler = manager.getActionHandler(IdeActions.ACTION_EDITOR_ESCAPE);
         manager.setActionHandler(IdeActions.ACTION_EDITOR_ESCAPE, escActionHandler);
 
-        int[] visibleBorderOffset = ProjectUtils.getVisibleRangeOffset(editor);
-        TextRange visibleRange = StringUtils.createTextRange(visibleBorderOffset);
-        String visibleString = editor.getDocument().getText(visibleRange);
+        TextRange visibleBorderOffset = ProjectUtils.getVisibleRangeOffset(editor);
+        String visibleString = editor.getDocument().getText(visibleBorderOffset);
 
         switch (mode) {
             case MODE_WORD0:
@@ -170,7 +169,7 @@ public class GlobalJumpHandler implements TypedActionHandler {
                 throw new RuntimeException("Invalid start mode: " + mode);
         }
 
-        List<MarksCanvas.Mark> marks = finder.start(editor, visibleString, visibleRange);
+        List<MarksCanvas.Mark> marks = finder.start(editor, visibleString, visibleBorderOffset);
         if (marks != null) {
             lastMarks = marks;
             jumpOrShowCanvas(lastMarks);

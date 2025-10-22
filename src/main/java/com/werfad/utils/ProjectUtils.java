@@ -1,12 +1,17 @@
 package com.werfad.utils;
 
+import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.ScrollingModel;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.werfad.KeyTagsGenerator;
 import com.werfad.MarksCanvas;
 import com.werfad.UserConfig;
+import groovyjarjarantlr4.v4.tool.ast.BlockAST;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -44,12 +49,12 @@ public class ProjectUtils {
         List<OffsetWithEditor> sortedOffsets = new ArrayList<>();
         for (EditorWrapper wrapper : allEditors) {
             com.intellij.openapi.editor.Editor editor = wrapper.editor;
-            int[] visibleRange = getVisibleRangeOffset(editor);
-            String visibleText = editor.getDocument().getText(StringUtils.createTextRange(visibleRange));
+            TextRange visibleRange = getVisibleRangeOffset(editor);
+            String visibleText = editor.getDocument().getText(visibleRange);
 
             Matcher matcher = pattern.matcher(visibleText);
             while (matcher.find()) {
-                int absoluteOffset = matcher.start() + visibleRange[0];
+                int absoluteOffset = matcher.start() + visibleRange.getStartOffset();
                 sortedOffsets.add(new OffsetWithEditor(editor, absoluteOffset));
             }
         }
@@ -73,9 +78,14 @@ public class ProjectUtils {
         return result;
     }
 
-    public static int[] getVisibleRangeOffset(com.intellij.openapi.editor.Editor editor) {
-        return new int[]{editor.getScrollingModel().getVisibleArea().y,
-                        editor.getScrollingModel().getVisibleArea().y + editor.getScrollingModel().getVisibleArea().height};
+    public static TextRange getVisibleRangeOffset(com.intellij.openapi.editor.Editor editor) {
+        ScrollingModel scrollingModel = editor.getScrollingModel();
+        Rectangle visibleArea = scrollingModel.getVisibleArea();
+        LogicalPosition startLog = editor.xyToLogicalPosition(new Point(0, visibleArea.y));
+        LogicalPosition lastLog = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height));
+        int startOff = editor.logicalPositionToOffset(startLog);
+        int endOff = editor.logicalPositionToOffset(new LogicalPosition(lastLog.line + 1, lastLog.column));
+        return new TextRange(startOff, endOff);
     }
 
     private static class EditorWrapper {

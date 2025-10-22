@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MarksCanvas extends JComponent {
-    private final DataBean config = UserConfig.getDataBean();
     private List<Mark> mMarks = List.of();
     private Editor mEditor;
     private Font mFont;
@@ -28,6 +27,10 @@ public class MarksCanvas extends JComponent {
     public void setData(List<Mark> marks) {
         mMarks = marks;
         repaint();
+    }
+
+    private DataBean getConfig() {
+        return UserConfig.getDataBean();
     }
 
     @Override
@@ -55,7 +58,7 @@ public class MarksCanvas extends JComponent {
                 Mark mark = pair.getMark();
                 Point coordinate = pair.getCoordinate();
 
-                g2d.setColor(new Color(config.backgroundColor, true));
+                g2d.setColor(new Color(getConfig().backgroundColor, true));
                 String keyTag = mark.getKeyTag();
                 Rectangle bounds = mFontMetrics.getStringBounds(
                     keyTag.substring(mark.getAdvanceIndex()), g
@@ -71,18 +74,18 @@ public class MarksCanvas extends JComponent {
                         int midX = xInCanvas + bounds.width / 2;
 
                         // first char
-                        g2d.setColor(new Color(config.hit2Color0, true));
+                        g2d.setColor(new Color(getConfig().hit2Color0, true));
                         g2d.drawString(String.valueOf(keyTag.charAt(0)), xInCanvas, yInCanvas);
 
                         // second char
-                        g2d.setColor(new Color(config.hit2Color1, true));
+                        g2d.setColor(new Color(getConfig().hit2Color1, true));
                         g2d.drawString(String.valueOf(keyTag.charAt(1)), midX, yInCanvas);
                     } else {
-                        g2d.setColor(new Color(config.hit2Color1, true));
+                        g2d.setColor(new Color(getConfig().hit2Color1, true));
                         g2d.drawString(String.valueOf(keyTag.charAt(1)), xInCanvas, yInCanvas);
                     }
                 } else {
-                    g2d.setColor(new Color(config.hit1Color, true));
+                    g2d.setColor(new Color(getConfig().hit1Color, true));
                     g2d.drawString(String.valueOf(keyTag.charAt(0)), xInCanvas, yInCanvas);
                 }
             });

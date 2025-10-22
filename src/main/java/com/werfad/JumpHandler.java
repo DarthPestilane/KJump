@@ -154,10 +154,9 @@ public class JumpHandler implements TypedActionHandler {
                 throw new RuntimeException("Invalid start mode: " + mode);
         }
 
-        int[] visibleBorderOffset = ProjectUtils.getVisibleRangeOffset(editor);
-        TextRange visibleRange = StringUtils.createTextRange(visibleBorderOffset);
-        String visibleString = editor.getDocument().getText(visibleRange);
-        List<MarksCanvas.Mark> marks = finder.start(editor, visibleString, visibleRange);
+        TextRange visibleBorderOffset = ProjectUtils.getVisibleRangeOffset(editor);
+        String visibleString = editor.getDocument().getText(visibleBorderOffset);
+        List<MarksCanvas.Mark> marks = finder.start(editor, visibleString, visibleBorderOffset);
         if (marks != null) {
             lastMarks = marks;
             jumpOrShowCanvas(editor, lastMarks);
@@ -174,8 +173,9 @@ public class JumpHandler implements TypedActionHandler {
             }
 
             if (mMarksCanvas.getParent() != null) {
-                mMarksCanvas.getParent().remove(mMarksCanvas);
-                mMarksCanvas.getParent().repaint();
+                java.awt.Container parent = mMarksCanvas.getParent();
+                parent.remove(mMarksCanvas);
+                parent.repaint();
             }
             isCanvasAdded = false;
         }
