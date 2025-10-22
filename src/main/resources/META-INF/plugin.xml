@@ -13,8 +13,39 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
     <description><![CDATA[
-        Enter short description for your plugin here.<br>
-        <em>most HTML tags may be used</em>
+        A powerful navigation plugin ported from vim-EasyMotion for JetBrains IDEs. KJump enhances your code navigation experience by providing quick jump capabilities to characters, words, and lines. It seamlessly integrates with IdeaVim for a more natural Vim-like experience.
+
+        <h3>Features</h3>
+        <ul>
+            <li>Quick character jump: Jump to any character in the visible area</li>
+            <li>Word navigation: Jump to any word or word starting with a specific character</li>
+            <li>Line jumping: Quickly navigate to any line</li>
+            <li>IdeaVim integration: Works seamlessly with IdeaVim</li>
+            <li>Minimal keystrokes: Reach your target with just a few keystrokes</li>
+        </ul>
+
+        <h3>Available Actions</h3>
+        <ul>
+            <li><b>KJump</b>: Input 1 character and jump to any same character</li>
+            <li><b>KJump Char 2</b>: Input 2 characters and jump to any matching position</li>
+            <li><b>KJump Word 0</b>: Jump to any word</li>
+            <li><b>KJump Word 1</b>: Input 1 character and jump to any word starting with this character</li>
+            <li><b>KJump Line</b>: Jump to any line</li>
+            <li><b>KJump Global Word 0</b>: Jump to any word across all visible editors</li>
+        </ul>
+
+        <h3>IdeaVim Integration</h3>
+        <p>To use KJump with IdeaVim, add the following commands to your <code>~/.ideavimrc</code>:</p>
+        <pre>
+" Basic jumps
+nmap &lt;leader&gt;&lt;leader&gt;s :action KJumpAction&lt;cr&gt;
+nmap &lt;leader&gt;&lt;leader&gt;w :action KJumpAction.Word0&lt;cr&gt;
+nmap &lt;leader&gt;&lt;leader&gt;l :action KJumpAction.Line&lt;cr&gt;
+
+" Additional jumps
+nmap &lt;leader&gt;&lt;leader&gt;c :action KJumpAction.Char2&lt;cr&gt;
+nmap &lt;leader&gt;&lt;leader&gt;f :action KJumpAction.Word1&lt;cr&gt;
+        </pre>
     ]]></description>
 
     <!-- Product and plugin compatibility requirements.

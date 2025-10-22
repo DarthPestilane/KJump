@@ -33,7 +33,9 @@ intellijPlatform {
         }
 
         changeNotes = """
-            Initial version
+            Added IdeaVim integration instructions to plugin description.
+            Updated documentation with vimrc configuration examples.
+            Added support for IntelliJ IDEA 2025+ versions.
         """.trimIndent()
     }
 }
