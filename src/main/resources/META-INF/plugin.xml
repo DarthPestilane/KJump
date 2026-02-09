@@ -32,6 +32,7 @@
             <li><b>KJump Word 1</b>: Input 1 character and jump to any word starting with this character</li>
             <li><b>KJump Line</b>: Jump to any line</li>
             <li><b>KJump Global Word 0</b>: Jump to any word across all visible editors</li>
+            <li><b>KJump Find Letter</b>: Jump to a letter within line, press f/F to move next/previous</li>
         </ul>
 
         <h3>IdeaVim Integration</h3>
