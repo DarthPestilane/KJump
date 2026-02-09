@@ -57,6 +57,8 @@ public class JumpHandler implements TypedActionHandler {
         if (marks != null) {
             lastMarks = marks;
             jumpOrShowCanvas(e, lastMarks);
+        } else {
+            stop(e);
         }
     }
 

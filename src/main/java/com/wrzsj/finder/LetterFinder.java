@@ -96,6 +96,9 @@ public class LetterFinder implements Finder {
                     }
                     return lastMarks; // 保持高亮显示
                 }
+
+                // 输入其他字符，重置状态并退出
+                state = STATE_WAIT_SEARCH_CHAR;
                 return null;
 
             default:
