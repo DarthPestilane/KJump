@@ -4,8 +4,8 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.7.1"
 }
 
-group = "com.github.a690700752.kjump"
-version = "1.0.4"
+group = "com.wrzsj.KJump"
+version = "1.0.0"
 
 repositories {
     mavenCentral()

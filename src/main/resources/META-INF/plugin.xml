@@ -1,14 +1,14 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.werfad</id>
+    <id>com.wrzsj</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
     <name>KJump</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://github.com/a690700752/KJump">a690700752</vendor>
+    <vendor url="https://github.com/DarthPestilane/KJump">wrzsj</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
@@ -56,27 +56,27 @@ nmap &lt;leader&gt;&lt;leader&gt;f :action KJumpAction.Word1&lt;cr&gt;
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.werfad.UserConfig"/>
-        <applicationConfigurable instance="com.werfad.KJumpConfigurable"/>
+        <applicationService serviceImplementation="com.wrzsj.UserConfig"/>
+        <applicationConfigurable instance="com.wrzsj.KJumpConfigurable"/>
     </extensions>
 
     <actions>
-        <action id="KJumpAction" class="com.werfad.action.KJumpAction" text="KJump"
+        <action id="KJumpAction" class="com.wrzsj.action.KJumpAction" text="KJump"
                 description="Input 1 character and jump to any same character."/>
-        <action id="KJumpAction.Char2" class="com.werfad.action.Char2Action" text="KJump Char 2"
+        <action id="KJumpAction.Char2" class="com.wrzsj.action.Char2Action" text="KJump Char 2"
                 description="Input 2 character and jump to any same character."/>
-        <action id="KJumpAction.Word0" class="com.werfad.action.Word0Action" text="KJump Word 0"
+        <action id="KJumpAction.Word0" class="com.wrzsj.action.Word0Action" text="KJump Word 0"
                 description="Jump to any word."/>
-        <action id="KJumpAction.Word1" class="com.werfad.action.Word1Action" text="KJump Word 1"
+        <action id="KJumpAction.Word1" class="com.wrzsj.action.Word1Action" text="KJump Word 1"
                 description="Input 1 character and jump to any word start with this character."/>
-        <action id="KJumpAction.Line" class="com.werfad.action.LineAction" text="KJump Line"
+        <action id="KJumpAction.Line" class="com.wrzsj.action.LineAction" text="KJump Line"
                 description="Jump to any line."/>
-        <action id="KJumpAction.Word1GotoDeclaration" class="com.werfad.action.GotoDeclarationWord1Action"
+        <action id="KJumpAction.Word1GotoDeclaration" class="com.wrzsj.action.GotoDeclarationWord1Action"
                 text="KJump Word 1 Goto Declaration"
                 description="Input 1 character and jump to declaration of any word start with this character."/>
-        <action id="KJumpAction.GlobalWord0" class="com.werfad.action.GlobalWord0Action" text="KJump Global Word 0"
+        <action id="KJumpAction.GlobalWord0" class="com.wrzsj.action.GlobalWord0Action" text="KJump Global Word 0"
                 description="Jump to any word across all visible editors."/>
-        <action id="kJumpAction.Letter" class="com.werfad.action.LetterAction" text="KJump Letter"
+        <action id="kJumpAction.Letter" class="com.wrzsj.action.LetterAction" text="KJump Letter"
                 description="Input 1 letter and jump to any same letter on same line."/>
     </actions>
 </idea-plugin>
