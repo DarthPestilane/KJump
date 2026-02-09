@@ -1,5 +1,6 @@
 package com.werfad;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.werfad.UserConfig.DataBean;
@@ -20,7 +21,7 @@ public class MarksCanvas extends JComponent {
         Rectangle visibleArea = e.getScrollingModel().getVisibleArea();
         setBounds(visibleArea.x, visibleArea.y, visibleArea.width, visibleArea.height);
         mEditor = e;
-        mFont = e.getColorsScheme().getFont(EditorFontType.BOLD);
+        mFont = e.getColorsScheme().getFont(EditorFontType.PLAIN);
         mFontMetrics = e.getContentComponent().getFontMetrics(mFont);
     }
 
@@ -52,41 +53,54 @@ public class MarksCanvas extends JComponent {
             pairs.add(new MarkCoordinatePair(mMarks.get(i), coordinates.get(i)));
         }
 
+        // 获取当前光标位置，避免覆盖光标
+        // 需要在读取操作中访问编辑器模型
+        int[] currentCaretOffset = {0};
+        ApplicationManager.getApplication().runReadAction(() -> {
+            currentCaretOffset[0] = mEditor.getCaretModel().getOffset();
+        });
+
         pairs.stream()
             .sorted((a, b) -> Integer.compare(b.getCoordinate().x, a.getCoordinate().x))
             .forEach(pair -> {
                 Mark mark = pair.getMark();
-                Point coordinate = pair.getCoordinate();
 
-                g2d.setColor(new Color(getConfig().backgroundColor, true));
-                String keyTag = mark.getKeyTag();
-                Rectangle bounds = mFontMetrics.getStringBounds(
-                    keyTag.substring(mark.getAdvanceIndex()), g
-                ).getBounds();
+                // 跳过当前光标位置的高亮背景绘制，避免遮挡光标
+                boolean isCaretPosition = mark.getOffset() == currentCaretOffset[0];
 
-                g2d.fillRect(coordinate.x - getX(), coordinate.y - getY(), bounds.width, bounds.height);
-                g2d.setFont(mFont);
+                if (!isCaretPosition) {
+                    Point coordinate = pair.getCoordinate();
+                    g2d.setColor(new Color(getConfig().backgroundColor, true));
+                    String keyTag = mark.getKeyTag();
 
-                int xInCanvas = coordinate.x - getX();
-                int yInCanvas = coordinate.y - getY() + bounds.height - mFontMetrics.getDescent();
-                if (keyTag.length() == 2) {
-                    if (mark.getAdvanceIndex() == 0) {
-                        int midX = xInCanvas + bounds.width / 2;
+                    Rectangle bounds = mFontMetrics.getStringBounds(
+                        keyTag.substring(mark.getAdvanceIndex()), g
+                    ).getBounds();
 
-                        // first char
-                        g2d.setColor(new Color(getConfig().hit2Color0, true));
-                        g2d.drawString(String.valueOf(keyTag.charAt(0)), xInCanvas, yInCanvas);
+                    g2d.fillRect(coordinate.x - getX(), coordinate.y - getY(), bounds.width, bounds.height);
+                    g2d.setFont(mFont);
 
-                        // second char
-                        g2d.setColor(new Color(getConfig().hit2Color1, true));
-                        g2d.drawString(String.valueOf(keyTag.charAt(1)), midX, yInCanvas);
+                    int xInCanvas = coordinate.x - getX();
+                    int yInCanvas = coordinate.y - getY() + (mEditor.getLineHeight() - bounds.height) / 2 + mFontMetrics.getAscent();
+                    if (keyTag.length() == 2) {
+                        if (mark.getAdvanceIndex() == 0) {
+                            int midX = xInCanvas + bounds.width / 2;
+
+                            // first char
+                            g2d.setColor(new Color(getConfig().hit2Color0, true));
+                            g2d.drawString(String.valueOf(keyTag.charAt(0)), xInCanvas, yInCanvas);
+
+                            // second char
+                            g2d.setColor(new Color(getConfig().hit2Color1, true));
+                            g2d.drawString(String.valueOf(keyTag.charAt(1)), midX, yInCanvas);
+                        } else {
+                            g2d.setColor(new Color(getConfig().hit2Color1, true));
+                            g2d.drawString(String.valueOf(keyTag.charAt(1)), xInCanvas, yInCanvas);
+                        }
                     } else {
-                        g2d.setColor(new Color(getConfig().hit2Color1, true));
-                        g2d.drawString(String.valueOf(keyTag.charAt(1)), xInCanvas, yInCanvas);
+                        g2d.setColor(new Color(getConfig().hit1Color, true));
+                        g2d.drawString(String.valueOf(keyTag.charAt(0)), xInCanvas, yInCanvas);
                     }
-                } else {
-                    g2d.setColor(new Color(getConfig().hit1Color, true));
-                    g2d.drawString(String.valueOf(keyTag.charAt(0)), xInCanvas, yInCanvas);
                 }
             });
         super.paint(g);
