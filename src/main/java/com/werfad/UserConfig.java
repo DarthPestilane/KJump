@@ -25,12 +25,15 @@ public class UserConfig implements PersistentStateComponent<UserConfig.DataBean>
         public int backgroundColor = DEFAULT_BG_COLOR;
         public int hit1Color = DEFAULT_FONT_COLOR;
         public int hit2Color0 = DEFAULT_FONT_COLOR;
-        public int hit2Color1 = DEFAULT_FONT_COLOR;
+        public int hit2Color1 = DEFAULT_FONT_COLOR_SECONDARY;
     }
 
     public static final String DEFAULT_CHARACTERS = "hklyuiopnm,qwertzxcvbasdgjf;";
-    public static final int DEFAULT_FONT_COLOR = -0x1;
-    public static final int DEFAULT_BG_COLOR = -0xff8534;
+    // public static final int DEFAULT_FONT_COLOR = -0x1;
+    public static final int DEFAULT_FONT_COLOR = 0xffffffff;
+    public static final int DEFAULT_FONT_COLOR_SECONDARY = 0xfffdc900;
+    // public static final int DEFAULT_BG_COLOR = -0xff8534;
+    public static final int DEFAULT_BG_COLOR = 0xff007acc;
 
     private static UserConfig getInstance() {
         return ApplicationManager.getApplication().getService(UserConfig.class);

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange;
 import com.werfad.KeyTagsGenerator;
 import com.werfad.MarksCanvas;
 import com.werfad.UserConfig;
+import com.werfad.utils.EditorUtils;
 import com.werfad.utils.StringUtils;
 
 import java.util.Comparator;
@@ -25,6 +26,10 @@ public class Char1Finder implements Finder {
         this.s = s;
         this.visibleRange = visibleRange;
         state = STATE_WAIT_SEARCH_CHAR;
+
+        // 添加灰色覆盖效果，提供视觉引导
+        EditorUtils.addGrayOverlay(e, false);
+
         return null;
     }
 
@@ -32,6 +37,9 @@ public class Char1Finder implements Finder {
     public List<MarksCanvas.Mark> input(Editor e, char c, List<MarksCanvas.Mark> lastMarks) {
         switch (state) {
             case STATE_WAIT_SEARCH_CHAR:
+                // 移除灰色覆盖效果
+                EditorUtils.removeGrayOverlay(e);
+
                 int caretOffset = e.getCaretModel().getOffset();
                 List<Integer> offsets = StringUtils.findAll(s, c, Character.isLowerCase(c))
                     .stream()

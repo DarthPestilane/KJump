@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange;
 import com.werfad.KeyTagsGenerator;
 import com.werfad.MarksCanvas;
 import com.werfad.UserConfig;
+import com.werfad.utils.EditorUtils;
 import com.werfad.utils.StringUtils;
 
 import java.util.Comparator;
@@ -28,6 +29,10 @@ public class Char2Finder implements Finder {
         this.s = s;
         this.visibleRange = visibleRange;
         state = STATE_WAIT_SEARCH_CHAR1;
+
+        // 添加灰色覆盖效果，提供视觉引导
+        EditorUtils.addGrayOverlay(e, false);
+
         return null;
     }
 
@@ -40,6 +45,9 @@ public class Char2Finder implements Finder {
                 return null;
 
             case STATE_WAIT_SEARCH_CHAR2:
+                // 移除灰色覆盖效果
+                EditorUtils.removeGrayOverlay(e);
+
                 int caretOffset = e.getCaretModel().getOffset();
                 String find = "" + firstChar + c;
                 boolean ignoreCase = find.chars().allMatch(ch -> Character.isLowerCase(ch));

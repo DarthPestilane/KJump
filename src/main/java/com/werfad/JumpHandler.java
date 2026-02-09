@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.actionSystem.TypedAction;
 import com.intellij.openapi.editor.actionSystem.TypedActionHandler;
 import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
 import com.werfad.finder.*;
+import com.werfad.utils.EditorUtils;
 import com.werfad.utils.ProjectUtils;
 import com.werfad.utils.StringUtils;
 import com.intellij.openapi.util.TextRange;
@@ -26,6 +27,7 @@ public class JumpHandler implements TypedActionHandler {
     public static final int MODE_WORD1 = 3;
     public static final int MODE_LINE = 4;
     public static final int MODE_WORD1_DECLARATION = 5;
+    public static final int MODE_LETTER = 6;
 
     private static final JumpHandler INSTANCE = new JumpHandler();
 
@@ -62,13 +64,13 @@ public class JumpHandler implements TypedActionHandler {
     private final EditorActionHandler escActionHandler = new EditorActionHandler() {
         @Override
         public void doExecute(Editor editor, Caret caret, DataContext dataContext) {
-            stop();
+            stop(editor);
         }
     };
 
     private void jumpOrShowCanvas(Editor e, List<MarksCanvas.Mark> marks) {
         if (marks.isEmpty()) {
-            stop();
+            stop(e);
         } else if (marks.size() == 1) {
             // only one found, just jump to it
             Caret caret = e.getCaretModel().getCurrentCaret();
@@ -92,7 +94,7 @@ public class JumpHandler implements TypedActionHandler {
             }
             caret.moveToOffset(marks.get(0).getOffset());
 
-            stop();
+            stop(e);
             if (onJump != null) {
                 onJump.run();
             }
@@ -150,6 +152,9 @@ public class JumpHandler implements TypedActionHandler {
                         .actionPerformed(anActionEvent);
                 };
                 break;
+            case MODE_LETTER:
+                finder = new LetterFinder();
+                break;
             default:
                 throw new RuntimeException("Invalid start mode: " + mode);
         }
@@ -163,7 +168,7 @@ public class JumpHandler implements TypedActionHandler {
         }
     }
 
-    private void stop() {
+    private void stop(Editor editor) {
         if (isStart) {
             isStart = false;
             EditorActionManager manager = EditorActionManager.getInstance();
@@ -178,6 +183,8 @@ public class JumpHandler implements TypedActionHandler {
                 parent.repaint();
             }
             isCanvasAdded = false;
+
+            EditorUtils.removeGrayOverlay(editor);
         }
     }
 }
