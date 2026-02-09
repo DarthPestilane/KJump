@@ -77,11 +77,12 @@ public class MarksCanvas extends JComponent {
                         keyTag.substring(mark.getAdvanceIndex()), g
                     ).getBounds();
 
-                    g2d.fillRect(coordinate.x - getX(), coordinate.y - getY(), bounds.width, bounds.height);
+                    int xInCanvas = coordinate.x - getX();
+                    int yBaseInCanvas = coordinate.y - getY() + (mEditor.getLineHeight() - bounds.height) / 2;
+                    g2d.fillRect(xInCanvas, yBaseInCanvas, bounds.width, bounds.height);
                     g2d.setFont(mFont);
 
-                    int xInCanvas = coordinate.x - getX();
-                    int yInCanvas = coordinate.y - getY() + (mEditor.getLineHeight() - bounds.height) / 2 + mFontMetrics.getAscent();
+                    int yInCanvas = yBaseInCanvas + mFontMetrics.getAscent();
                     if (keyTag.length() == 2) {
                         if (mark.getAdvanceIndex() == 0) {
                             int midX = xInCanvas + bounds.width / 2;
