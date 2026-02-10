@@ -1,0 +1,68 @@
+package com.wrzsj.finder;
+
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.util.TextRange;
+import com.wrzsj.KeyTagsGenerator;
+import com.wrzsj.MarksCanvas;
+import com.wrzsj.UserConfig;
+import com.wrzsj.utils.EditorUtils;
+import com.wrzsj.utils.StringUtils;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+public class LineCharFinder implements Finder {
+    private static final int STATE_WAIT_SEARCH_CHAR = 0;
+    private static final int STATE_WAIT_KEY = 1;
+
+    private int state = STATE_WAIT_SEARCH_CHAR;
+    private String s;
+    private TextRange visibleRange;
+
+    @Override
+    public List<MarksCanvas.Mark> start(Editor e, String s, TextRange visibleRange) {
+        int lineStartOffset = e.getDocument().getLineStartOffset(e.getCaretModel().getLogicalPosition().line);
+        int lineEndOffset = e.getDocument().getLineEndOffset(e.getCaretModel().getLogicalPosition().line);
+        TextRange lineRange = new TextRange(lineStartOffset, lineEndOffset);
+
+        this.s = e.getDocument().getText(lineRange);
+        this.visibleRange = lineRange;
+        state = STATE_WAIT_SEARCH_CHAR;
+
+        // 添加灰色覆盖效果，提供视觉引导
+        EditorUtils.addGrayOverlay(e, true);
+
+        return null;
+    }
+
+    @Override
+    public List<MarksCanvas.Mark> input(Editor e, char c, List<MarksCanvas.Mark> lastMarks) {
+        switch (state) {
+            case STATE_WAIT_SEARCH_CHAR:
+                // 移除灰色覆盖效果
+                EditorUtils.removeGrayOverlay(e);
+
+                int caretOffset = e.getCaretModel().getOffset();
+                List<Integer> offsets = StringUtils.findAll(s, c, Character.isLowerCase(c))
+                        .stream()
+                        .map(offset -> offset + visibleRange.getStartOffset())
+                        .sorted(Comparator.comparingInt(offset -> Math.abs(offset - caretOffset)))
+                        .collect(Collectors.toList());
+
+                List<String> tags = KeyTagsGenerator.createTagsTree(offsets.size(), UserConfig.getDataBean().characters);
+                state = STATE_WAIT_KEY;
+
+                return IntStream.range(0, Math.min(offsets.size(), tags.size()))
+                        .mapToObj(i -> new MarksCanvas.Mark(tags.get(i), offsets.get(i)))
+                        .collect(Collectors.toList());
+
+            case STATE_WAIT_KEY:
+                return advanceMarks(c, lastMarks);
+
+            default:
+                throw new RuntimeException("Impossible.");
+        }
+    }
+}

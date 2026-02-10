@@ -27,6 +27,7 @@ public class JumpHandler implements TypedActionHandler {
     public static final int MODE_LINE = 4;
     public static final int MODE_WORD1_DECLARATION = 5;
     public static final int MODE_LETTER = 6;
+    public static final int MODE_LINE_CHAR = 7;
 
     private static final JumpHandler INSTANCE = new JumpHandler();
 
@@ -77,20 +78,20 @@ public class JumpHandler implements TypedActionHandler {
             Caret caret = e.getCaretModel().getCurrentCaret();
             if (caret.hasSelection()) {
                 int downOffset = caret.getSelectionStart() == caret.getOffset()
-                    ? caret.getSelectionEnd()
-                    : caret.getSelectionStart();
+                        ? caret.getSelectionEnd()
+                        : caret.getSelectionStart();
                 caret.setSelection(downOffset, marks.get(0).getOffset());
             }
             // Shamelessly robbed from AceJump: https://github.com/acejump/AceJump/blob/99e0a5/src/main/kotlin/org/acejump/action/TagJumper.kt#L87
             if (e.getProject() != null) {
                 CommandProcessor.getInstance().executeCommand(
-                    e.getProject(), () -> {
-                        IdeDocumentHistory history = IdeDocumentHistory.getInstance(e.getProject());
-                        history.setCurrentCommandHasMoves();
-                        history.includeCurrentCommandAsNavigation();
-                        history.includeCurrentPlaceAsChangePlace();
-                    }, "KJumpHistoryAppender", DocCommandGroupId.noneGroupId(e.getDocument()),
-                    UndoConfirmationPolicy.DO_NOT_REQUEST_CONFIRMATION, e.getDocument()
+                        e.getProject(), () -> {
+                            IdeDocumentHistory history = IdeDocumentHistory.getInstance(e.getProject());
+                            history.setCurrentCommandHasMoves();
+                            history.includeCurrentCommandAsNavigation();
+                            history.includeCurrentPlaceAsChangePlace();
+                        }, "KJumpHistoryAppender", DocCommandGroupId.noneGroupId(e.getDocument()),
+                        UndoConfirmationPolicy.DO_NOT_REQUEST_CONFIRMATION, e.getDocument()
                 );
             }
             caret.moveToOffset(marks.get(0).getOffset());
@@ -149,12 +150,15 @@ public class JumpHandler implements TypedActionHandler {
                 finder = new Word1Finder();
                 onJump = () -> {
                     ActionManager.getInstance()
-                        .getAction(IdeActions.ACTION_GOTO_DECLARATION)
-                        .actionPerformed(anActionEvent);
+                            .getAction(IdeActions.ACTION_GOTO_DECLARATION)
+                            .actionPerformed(anActionEvent);
                 };
                 break;
             case MODE_LETTER:
                 finder = new LetterFinder();
+                break;
+            case MODE_LINE_CHAR:
+                finder = new LineCharFinder();
                 break;
             default:
                 throw new RuntimeException("Invalid start mode: " + mode);

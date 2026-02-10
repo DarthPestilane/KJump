@@ -33,6 +33,7 @@
             <li><b>KJump Line</b>: Jump to any line</li>
             <li><b>KJump Global Word 0</b>: Jump to any word across all visible editors</li>
             <li><b>KJump Find Letter</b>: Jump to a letter within line, press f/F to move next/previous</li>
+            <li><b>KJump Line Char</b>: Input 1 character and jump to any same character within line</li>
         </ul>
 
         <h3>IdeaVim Integration</h3>
@@ -78,5 +79,7 @@ nmap &lt;leader&gt;&lt;leader&gt;f :action KJumpAction.Word1&lt;cr&gt;
                 description="Jump to any word across all visible editors."/>
         <action id="kJumpAction.Letter" class="com.wrzsj.action.LetterAction" text="KJump Letter"
                 description="Input 1 letter and jump to any same letter on same line."/>
+        <action id="kJumpAction.LineChar" class="com.wrzsj.action.LineCharAction" text="KJump Line Char"
+                description="Input 1 character and jump to any same character within line."/>
     </actions>
 </idea-plugin>
