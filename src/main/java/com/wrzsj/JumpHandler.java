@@ -28,6 +28,7 @@ public class JumpHandler implements TypedActionHandler {
     public static final int MODE_WORD1_DECLARATION = 5;
     public static final int MODE_LETTER = 6;
     public static final int MODE_LINE_CHAR = 7;
+    public static final int MODE_LINE_WORD = 8;
 
     private static final JumpHandler INSTANCE = new JumpHandler();
 
@@ -159,6 +160,9 @@ public class JumpHandler implements TypedActionHandler {
                 break;
             case MODE_LINE_CHAR:
                 finder = new LineCharFinder();
+                break;
+            case MODE_LINE_WORD:
+                finder = new LineWordFinder();
                 break;
             default:
                 throw new RuntimeException("Invalid start mode: " + mode);
