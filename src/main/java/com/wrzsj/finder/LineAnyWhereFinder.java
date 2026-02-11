@@ -13,9 +13,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class LineWordFinder implements Finder {
+public class LineAnyWhereFinder implements Finder {
     // private static final Pattern pattern = Pattern.compile("(?i)\\b\\w");
-    private static final Pattern pattern = Pattern.compile("\\b\\w|\\w\\b|(?<=[a-z])(?=[A-Z])\\w|(?<=_)\\w|\\w(?=_)");
+
+    // a better pattern to find word start positions, including:
+    // 1. word
+    // 2. end of word
+    // 3. CamelCase
+    // 4. after '_' hoge_foo
+    // 5. after '#' hoge#foo
+    private static final Pattern pattern = Pattern.compile("\\b\\w|\\w\\b|(?<=[a-z])(?=[A-Z])|(?<=_)\\w|(?<=#)\\w");
 
     @Override
     public List<MarksCanvas.Mark> start(Editor e, String _s, TextRange _visibleRange) {
