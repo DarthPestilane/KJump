@@ -5,8 +5,6 @@ import com.intellij.openapi.util.TextRange;
 import com.wrzsj.KeyTagsGenerator;
 import com.wrzsj.MarksCanvas;
 import com.wrzsj.UserConfig;
-import com.wrzsj.utils.EditorUtils;
-import com.wrzsj.utils.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -16,7 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LineWordFinder implements Finder {
-    private static final Pattern pattern = Pattern.compile("(?i)\\b\\w");
+    // private static final Pattern pattern = Pattern.compile("(?i)\\b\\w");
+    private static final Pattern pattern = Pattern.compile("\\b\\w|\\w\\b|(?<=[a-z])(?=[A-Z])\\w|(?<=_)\\w|\\w(?=_)");
 
     @Override
     public List<MarksCanvas.Mark> start(Editor e, String _s, TextRange _visibleRange) {
